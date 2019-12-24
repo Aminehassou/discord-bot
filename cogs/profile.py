@@ -7,8 +7,13 @@ class Profile(commands.Cog):
         self.client = client
 
     @commands.command()
-    async def profile(self, ctx, member: discord.Member):
-        await ctx.send(member.display_name)
+    async def profile(self, ctx, member: discord.Member, channel: discord.TextChannel=None):
+        channel = channel or ctx.channel
+        counter = 0
+        async for message in channel.history(limit = 200):
+            if message.author == self.client.user:
+                counter += 1
+        await ctx.send("Username: {}\nRoles: {}\nMessages Sent: {}".format(member.display_name, (member.roles), counter))
 
 def setup(client):
     client.add_cog(Profile(client))
