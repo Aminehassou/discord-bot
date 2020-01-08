@@ -1,6 +1,7 @@
 import logging
 import os
 import discord
+import config
 from discord.ext import commands
 logging.basicConfig(level=logging.INFO)
 
@@ -25,4 +26,4 @@ for filename in os.listdir("./cogs"):
         client.load_extension(f"cogs.{filename[:-3]}")    
 
 
-client.run("NjQ0NzQ4OTYzNDU0NjQ4MzIw.Xc4nWw.mGPHYFltXUEXkwLNg7VzdJkG-WA")
+client.run(config.TOKEN)
