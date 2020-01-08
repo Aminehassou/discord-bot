@@ -23,30 +23,37 @@ class Profile(commands.Cog):
     async def on_message(self, message):
         if not message.author.bot:
             currentId = message.author.id
+            currentGuildId = message.author.guild.id
+            print(currentGuildId)
             currentName = message.author.name
-            newLevel = calculateLevel(self.userInfo[currentId]["messages"])
-            self.userInfo[currentId]["messages"] += 1
-            self.userInfo[currentId]["name"] = currentName
-            if self.userInfo[currentId]["level"] != newLevel:
-                self.userInfo[currentId]["level"] = newLevel
-                await message.channel.send("Congratulations {}! You have reached **level {}**!".format(message.author.name, self.userInfo[currentId]["level"]))
-    
+            user = db.getUser(currentId, currentGuildId)
+            if not user:
+                user = db.insertNewUser(currentId, currentGuildId, currentName)
+            newLevel = calculateLevel(user["messages"])
+            user["messages"] += 1
+            user["name"] = currentName
+            if user["level"] != newLevel:
+                user["level"] = newLevel
+                await message.channel.send("Congratulations {}! You have reached **level {}**!".format(user["name"], user["level"]))
+            db.updateUser(user)
+
     @commands.command()
     async def profile(self, ctx, member: discord.Member, channel: discord.TextChannel=None):
         channel = channel or ctx.channel
+        user = db.getUser(member.id, member.guild.id)
         await ctx.send("**Username:** {}\n**Roles:** {}\n**Messages Sent:** {}\n**Level:** {}".format(
-            member.display_name,
+            user["name"],
             ", ".join([role.name for role in member.roles[1:]]),
-            self.userInfo[member.id]["messages"],
-            self.userInfo[member.id]["Level"])
+            user["messages"],
+            user["level"])
         )
 
     @commands.command()
     async def leaderboard(self, ctx):
-        board = sorted(self.userInfo.values(), key = lambda x: x["messages"])[:10]
+        board = db.sortByMessages(10, ctx.channel.guild.id)
         output = ""
-        for index, user in enumerate(board):
-            output = output + "`{rank}. {name} ({count} messages)`\n".format(rank = index + 1, name = user["name"], count = user["messages"])
+        for index, rankedUser in enumerate(board):
+            output = output + "`{rank}. {name} ({count} messages)`\n".format(rank = index + 1, name = rankedUser["name"], count = rankedUser["messages"])
         await ctx.send(output)
         
 def setup(client):
