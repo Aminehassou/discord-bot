@@ -13,7 +13,7 @@ def calculateLevel(messages):
     result = 1 + (1/4)*sqrt(messages)
     return int(result)
 
-def hasPerk(userLevel, message, user):
+async def hasPerk(userLevel, message, user):
     if userLevel % 3 == 0:
         await message.channel.send("{}, you've unlocked a new perk slot! do $perks to choose a perk!".format(user["name"]))
         return userLevel
