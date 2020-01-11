@@ -17,9 +17,10 @@ class Perks(commands.Cog):
             print(self.roleMessage.id)
             guildId = payload.guild_id
             guild = discord.utils.find(lambda currentGuild: currentGuild.id == guildId, self.client.guilds)
-            if payload.emoji.name == "one":
+            print(payload)
+            if payload.emoji.name == "1️⃣":
                 role = discord.utils.get(guild.roles, name="Mage")
-            elif payload.emoji.name == "two":
+            elif payload.emoji.name == "2️⃣":
                 role = discord.utils.get(guild.roles, name="Warrior")
             else:
                 role = discord.utils.get(guild.roles, name=payload.emoji.name)
@@ -41,9 +42,9 @@ class Perks(commands.Cog):
             guildId = payload.guild_id
             guild = discord.utils.find(lambda currentGuild: currentGuild.id == guildId, self.client.guilds)
 
-            if payload.emoji.name == "one":
+            if payload.emoji.name == "1️⃣":
                 role = discord.utils.get(guild.roles, name="Mage")
-            elif payload.emoji.name == "two":
+            elif payload.emoji.name == "2️⃣":
                 role = discord.utils.get(guild.roles, name="Warrior")
             else:
                 role = discord.utils.get(guild.roles, name=payload.emoji.name)
@@ -52,7 +53,7 @@ class Perks(commands.Cog):
                 member = discord.utils.find(lambda m: m.id == payload.user_id, guild.members)
                 
                 if member is not None:
-                    await member.add_removes(role)
+                    await member.remove_roles(role)
                     print("Role successfully removed!")
                 else:
                     print("Member not found.")
