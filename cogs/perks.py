@@ -9,6 +9,7 @@ class Perks(commands.Cog):
     def __init__(self, client): 
         self.client = client
         self.roleMessage = ""
+        self.emoteClasses = {"Mage": "1️⃣", "Warrior": "2️⃣", "Archer": "3️⃣"}
 
     @commands.Cog.listener()
     async def on_raw_reaction_add(self, payload):
@@ -18,13 +19,11 @@ class Perks(commands.Cog):
             guildId = payload.guild_id
             guild = discord.utils.find(lambda currentGuild: currentGuild.id == guildId, self.client.guilds)
             print(payload)
-            if payload.emoji.name == "1️⃣":
-                role = discord.utils.get(guild.roles, name="Mage")
-            elif payload.emoji.name == "2️⃣":
-                role = discord.utils.get(guild.roles, name="Warrior")
-            else:
-                role = discord.utils.get(guild.roles, name=payload.emoji.name)
-            
+
+            for key, value in self.emoteClasses.items():
+                if payload.emoji.name == value:
+                    role = discord.utils.get(guild.roles, name=key)
+
             if role is not None:
                 member = discord.utils.find(lambda m: m.id == payload.user_id, guild.members)
                 if member is not None:
@@ -42,13 +41,10 @@ class Perks(commands.Cog):
             guildId = payload.guild_id
             guild = discord.utils.find(lambda currentGuild: currentGuild.id == guildId, self.client.guilds)
 
-            if payload.emoji.name == "1️⃣":
-                role = discord.utils.get(guild.roles, name="Mage")
-            elif payload.emoji.name == "2️⃣":
-                role = discord.utils.get(guild.roles, name="Warrior")
-            else:
-                role = discord.utils.get(guild.roles, name=payload.emoji.name)
-
+            for key, value in self.emoteClasses.items():
+                if payload.emoji.name == value:
+                    role = discord.utils.get(guild.roles, name=key)
+                    
             if role is not None:
                 member = discord.utils.find(lambda m: m.id == payload.user_id, guild.members)
                 
@@ -62,9 +58,20 @@ class Perks(commands.Cog):
                 print("Role not found.")
 
     @commands.command()
-    async def perks(self, ctx):
+    async def classes(self, ctx):
+        """Displays currently available classes"""
         currentUser = ctx.author.name
-        self.roleMessage = await ctx.send("React with one of the emotes corresponding to the perk you want, {}:\n:one: : Mage\n:two: : Warrior".format(currentUser))
+
+        
+        self.roleMessage = await ctx.send("React with one of the emotes corresponding to the class you want, {}:\n:one: : Mage\n:two: : Warrior\n:three: : Archer".format(currentUser))
+    
+    @commands.command()
+    async def perks(self, ctx):
+        """Displays currently available perks"""
+        currentUser = ctx.author.name
+
+
+        self.roleMessage = await ctx.send("React with one of the emotes corresponding to the class you want, {}:\n".format(currentUser))
 
 def setup(client):
     client.add_cog(Perks(client))

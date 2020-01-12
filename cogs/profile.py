@@ -14,8 +14,11 @@ def calculateLevel(messages):
     return int(result)
 
 async def hasPerk(userLevel, message, user):
-    if userLevel % 3 == 0:
-        await message.channel.send("{}, you've unlocked a new perk slot! do $perks to choose a perk!".format(user["name"]))
+    if userLevel == 3:
+        await message.channel.send("{}, you've unlocked a class slot! do $perks to choose your class!".format(user["name"]))
+        return userLevel
+    elif userLevel % 3 == 0 and userLevel > 3:
+        await message.channel.send("{}, you've unlocked a class perk slot! do $perks to choose a perk!".format(user["name"]))
         return userLevel
     return None
 
@@ -48,6 +51,7 @@ class Profile(commands.Cog):
 
     @commands.command()
     async def profile(self, ctx, member: discord.Member, channel: discord.TextChannel=None):
+        """Displays the specified user's profile"""
         channel = channel or ctx.channel
         user = db.getUser(member.id, member.guild.id)
         
@@ -60,6 +64,7 @@ class Profile(commands.Cog):
 
     @commands.command()
     async def leaderboard(self, ctx):
+        """Displays top 10 most active users by messages sent"""
         board = db.sortByMessages(10, ctx.channel.guild.id)
         output = ""
         
