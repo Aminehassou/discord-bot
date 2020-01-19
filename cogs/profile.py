@@ -10,15 +10,16 @@ from math import sqrt
 
 
 def calculateLevel(messages):
-    result = 1 + (1/4)*sqrt(messages)
+    #result = 1 + (1/4)*sqrt(messages)
+    result = 1 + messages / 10
     return int(result)
 
 async def hasPerk(userLevel, message, user):
     if userLevel == 3:
-        await message.channel.send("{}, you've unlocked a class slot! do $perks to choose your class!".format(user["name"]))
+        await message.channel.send("{}, you've unlocked a class slot! do $upgrade to choose your class!".format(user["name"]))
         return userLevel
     elif userLevel % 3 == 0 and userLevel > 3:
-        await message.channel.send("{}, you've unlocked a class perk slot! do $perks to choose a perk!".format(user["name"]))
+        await message.channel.send("{}, you've unlocked a perk slot! do $upgrade to choose a perk!".format(user["name"]))
         return userLevel
     return None
 
@@ -46,7 +47,7 @@ class Profile(commands.Cog):
             if user["level"] != newLevel:
                 user["level"] = newLevel
                 await message.channel.send("Congratulations {}! You have reached **level {}**!".format(user["name"], user["level"]))
-            
+                await hasPerk(user["level"], message, user)
             db.updateUser(user)
 
     @commands.command()

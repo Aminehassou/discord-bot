@@ -28,6 +28,7 @@ class Perks(commands.Cog):
                 member = discord.utils.find(lambda m: m.id == payload.user_id, guild.members)
                 if member is not None:
                     await member.add_roles(role)
+                    await self.roleMessage.delete()
                     print("Role successfully added!")
                 else:
                     print("Member not found.")
@@ -50,7 +51,9 @@ class Perks(commands.Cog):
                 
                 if member is not None:
                     await member.remove_roles(role)
+                    await self.roleMessage.delete()
                     print("Role successfully removed!")
+
                 else:
                     print("Member not found.")
             
@@ -58,20 +61,17 @@ class Perks(commands.Cog):
                 print("Role not found.")
 
     @commands.command()
-    async def classes(self, ctx):
+    async def upgrade(self, ctx):
         """Displays currently available classes"""
         currentUser = ctx.author.name
+        user = db.getUser(ctx.author.id, ctx.author.guild.id)
+        if user["level"] % 3 != 0:
+            self.roleMessage = await ctx.send("You're not a high enough level yet!")
+        elif user["level"] == 3:
+            self.roleMessage = await ctx.send("React with one of the emotes corresponding to the class you want, {}:\n:one: : Mage\n:two: : Warrior\n:three: : Archer".format(currentUser))
+        elif user["level"] % 3 == 0 and user["level"] > 3:
+            self.roleMessage = await ctx.send("React with one of the emotes corresponding to the perk you want, {}:".format(currentUser))
 
-        
-        self.roleMessage = await ctx.send("React with one of the emotes corresponding to the class you want, {}:\n:one: : Mage\n:two: : Warrior\n:three: : Archer".format(currentUser))
-    
-    @commands.command()
-    async def perks(self, ctx):
-        """Displays currently available perks"""
-        currentUser = ctx.author.name
-
-
-        self.roleMessage = await ctx.send("React with one of the emotes corresponding to the class you want, {}:\n".format(currentUser))
 
 def setup(client):
     client.add_cog(Perks(client))
