@@ -11,6 +11,7 @@ class Perks(commands.Cog):
         self.roleMessage = ""
         self.emoteClasses = {"Mage": "1️⃣", "Warrior": "2️⃣", "Archer": "3️⃣"}
 
+
     @commands.Cog.listener()
     async def on_raw_reaction_add(self, payload):
         mssgId = payload.message_id
@@ -28,7 +29,6 @@ class Perks(commands.Cog):
                 member = discord.utils.find(lambda m: m.id == payload.user_id, guild.members)
                 if member is not None:
                     await member.add_roles(role)
-                    await self.roleMessage.delete()
                     print("Role successfully added!")
                 else:
                     print("Member not found.")
@@ -51,7 +51,6 @@ class Perks(commands.Cog):
                 
                 if member is not None:
                     await member.remove_roles(role)
-                    await self.roleMessage.delete()
                     print("Role successfully removed!")
 
                 else:
@@ -69,6 +68,9 @@ class Perks(commands.Cog):
             self.roleMessage = await ctx.send("You're not a high enough level yet!")
         elif user["level"] == 3:
             self.roleMessage = await ctx.send("React with one of the emotes corresponding to the class you want, {}:\n:one: : Mage\n:two: : Warrior\n:three: : Archer".format(currentUser))
+            await self.roleMessage.add_reaction("1️⃣")
+            await self.roleMessage.add_reaction("2️⃣")
+            await self.roleMessage.add_reaction("3️⃣")
         elif user["level"] % 3 == 0 and user["level"] > 3:
             self.roleMessage = await ctx.send("React with one of the emotes corresponding to the perk you want, {}:".format(currentUser))
 
