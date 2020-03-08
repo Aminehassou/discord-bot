@@ -12,13 +12,17 @@ def getUser(userId, guildId):
     return c.fetchone()
 
 def insertNewUser(userId, guildId, name):
-    newUser = {"id": userId, "guild_id": guildId, "name": name, "messages": 0, "level": 0}
-    c.execute("INSERT INTO users VALUES (:id, :guild_id, :name, :messages, :level)", newUser)
+    newUser = {"id": userId, "guild_id": guildId, "name": name, "messages": 0, "level": 0, "is_upgraded": 0}
+    c.execute("INSERT INTO users VALUES (:id, :guild_id, :name, :messages, :level, :is_upgraded)", newUser)
     conn.commit()
     return newUser
 
 def updateUser(user):
     c.execute("UPDATE users SET name = :name, messages = :messages, level = :level WHERE id = :id AND guild_id = :guild_id", user)
+    conn.commit()
+
+def updateUpgradeStatus(userId, guildId, newStatus):
+    c.execute("update users SET is_upgraded = :is_upgraded WHERE id = :id AND guild_id = :guild_id", {"is_upgraded": newStatus, "id": userId, "guild_id": guildId})
     conn.commit()
 
 def sortByMessages(limit, guildId):

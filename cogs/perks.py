@@ -17,24 +17,20 @@ class Perks(commands.Cog):
     async def on_raw_reaction_add(self, payload):
         mssgId = payload.message_id
         if mssgId == self.roleMessage.id and payload.user_id != 644748963454648320:
-            print(self.roleMessage.id)
             guildId = payload.guild_id
             guild = discord.utils.find(lambda currentGuild: currentGuild.id == guildId, self.client.guilds)
-            print(payload)
 
             for key, value in self.emoteClasses.items():
                 if payload.emoji.name == value:
                     role = discord.utils.get(guild.roles, name=key)
+                    db.updateUpgradeStatus(payload.user_id, guildId, 1)
+                    await self.roleMessage.delete()
 
             for key, value in self.emotePerks.items():
                 if payload.emoji.name == value:
                     role = discord.utils.get(guild.roles, name=key)
                     await self.roleMessage.delete()
 
-            if payload.emoji.name == "4️⃣":
-                    await self.roleMessage.delete()
-                    role = None
-            
             if role is not None:
                 member = discord.utils.find(lambda m: m.id == payload.user_id, guild.members)
                 if member is not None:
@@ -74,15 +70,16 @@ class Perks(commands.Cog):
         """Displays currently available perks/classes"""
         currentUser = ctx.author.name
         user = db.getUser(ctx.author.id, ctx.author.guild.id)
-        if user["level"] % 3 != 0:
+        if user["level"] < 3 or (user["level"] % 3 == 1 and user["is_upgraded"] == 1):
             self.roleMessage = await ctx.send("You're not a high enough level yet!")
-        
-        elif user["level"] == 3:
-            self.roleMessage = await ctx.send("React with one of the emotes corresponding to the class you want, {}:\n:one: : Mage\n:two: : Warrior\n:three: : Archer\n:four: : Exit".format(currentUser))
+
+        # Class picking is a one-time thing for now [Not upgrading in time leads to you not having a class]
+        elif user["level"] >= 3 and user["is_upgraded"] == 0:   
+            self.roleMessage = await ctx.send("React with one of the emotes corresponding to the class you want, {}:\n:one: : Mage\n:two: : Warrior\n:three: : Archer".format(currentUser))
             for key, value in self.emoteClasses.items():
                 await self.roleMessage.add_reaction(value)
-            await self.roleMessage.add_reaction("4️⃣")
-
+                
+        # Perks are roles assigned to the user [Right now they can't be stacked]
         elif user["level"] % 3 == 0 and user["level"] > 3:
             self.roleMessage = await ctx.send("React with one of the emotes corresponding to the perk you want, {}:\n⚔️ : Damage up\n🛡️ : Defense up\n❤️ : Health up".format(currentUser))
             for key, value in self.emotePerks.items():
