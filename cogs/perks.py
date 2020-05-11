@@ -19,7 +19,7 @@ class Perks(commands.Cog):
         if mssgId == self.roleMessage.id and payload.user_id != 644748963454648320:
             guildId = payload.guild_id
             guild = discord.utils.find(lambda currentGuild: currentGuild.id == guildId, self.client.guilds)
-
+            member = discord.utils.find(lambda m: m.id == payload.user_id, guild.members)
             for key, value in self.emoteClasses.items():
                 if payload.emoji.name == value:
                     role = discord.utils.get(guild.roles, name=key)
@@ -32,7 +32,6 @@ class Perks(commands.Cog):
                     await self.roleMessage.delete()
 
             if role is not None:
-                member = discord.utils.find(lambda m: m.id == payload.user_id, guild.members)
                 if member is not None:
                     await member.add_roles(role)
                     print("Role successfully added!")
@@ -73,14 +72,14 @@ class Perks(commands.Cog):
         if user["level"] < 3 or (user["level"] % 3 == 1 and user["is_upgraded"] == 1):
             self.roleMessage = await ctx.send("You're not a high enough level yet!")
 
-        # Class picking is a one-time thing for now [Not upgrading in time leads to you not having a class]
+        # Class picking is a one-time thing for now
         elif user["level"] >= 3 and user["is_upgraded"] == 0:   
             self.roleMessage = await ctx.send("React with one of the emotes corresponding to the class you want, {}:\n:one: : Mage\n:two: : Warrior\n:three: : Archer".format(currentUser))
             for key, value in self.emoteClasses.items():
                 await self.roleMessage.add_reaction(value)
                 
         # Perks are roles assigned to the user [Right now they can't be stacked]
-        elif user["level"] % 3 == 0 and user["level"] > 3:
+        elif user["level"] % 3 == 0 and user["level"] > 3 and user["is_upgraded"] == 1:
             self.roleMessage = await ctx.send("React with one of the emotes corresponding to the perk you want, {}:\n⚔️ : Damage up\n🛡️ : Defense up\n❤️ : Health up".format(currentUser))
             for key, value in self.emotePerks.items():
                 await self.roleMessage.add_reaction(value)

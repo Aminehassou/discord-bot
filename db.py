@@ -25,6 +25,10 @@ def updateUpgradeStatus(userId, guildId, newStatus):
     c.execute("update users SET is_upgraded = :is_upgraded WHERE id = :id AND guild_id = :guild_id", {"is_upgraded": newStatus, "id": userId, "guild_id": guildId})
     conn.commit()
 
+def updateLevel(userId, guildId, newLevel):
+    c.execute("update users SET level = :newLevel WHERE id = :id AND guild_id = :guild_id", {"newLevel": newLevel, "id": userId, "guild_id": guildId})
+    conn.commit()
+
 def sortByMessages(limit, guildId):
     c.execute("SELECT messages, name FROM users WHERE guild_id = :guild_id ORDER BY messages DESC LIMIT 10", {"guild_id": guildId})
     return c.fetchall()

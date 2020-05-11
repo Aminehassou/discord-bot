@@ -10,8 +10,7 @@ from math import sqrt
 
 
 def calculateLevel(messages):
-    #result = 1 + (1/4)*sqrt(messages)
-    result = 1 + messages / 10
+    result = 1 + (1/2)*sqrt(messages)
     return int(result)
 
 async def hasPerk(userLevel, message, user):
