@@ -3,6 +3,7 @@ import logging
 import discord
 import sqlite3
 import db
+import botId
 
 from discord.ext import commands
 class Perks(commands.Cog):
@@ -16,7 +17,7 @@ class Perks(commands.Cog):
     @commands.Cog.listener()
     async def on_raw_reaction_add(self, payload):
         mssgId = payload.message_id
-        if mssgId == self.roleMessage.id and payload.user_id != 644748963454648320:
+        if mssgId == self.roleMessage.id and payload.user_id != botId.BOTID:
             guildId = payload.guild_id
             guild = discord.utils.find(lambda currentGuild: currentGuild.id == guildId, self.client.guilds)
             member = discord.utils.find(lambda m: m.id == payload.user_id, guild.members)
