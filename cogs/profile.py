@@ -54,13 +54,26 @@ class Profile(commands.Cog):
         """Displays the specified user's profile"""
         channel = channel or ctx.channel
         user = db.getUser(member.id, member.guild.id)
-        
-        await ctx.send("**Username:** {}\n**Roles:** {}\n**Messages Sent:** {}\n**Level:** {}".format(
+        if not user:
+            await ctx.send("This user does not exist or has no profile information.")
+            return 0
+
+        displayProfile = discord.Embed(color = discord.Color.dark_blue(), title = "Profile")
+        displayProfile.set_image(url = "{}".format(member.avatar_url))
+        displayProfile.add_field(name = "**Username**", value = user["name"])
+        if len(member.roles) > 1:
+            displayProfile.add_field(name = "**Roles**", value = ", ".join([role.name for role in member.roles[1:]]))
+        displayProfile.add_field(name = "**Messages Sent**", value = user["messages"], inline = False)
+        displayProfile.add_field(name = "**Level**", value = user["level"])
+        displayProfile.add_field(name = "**Currency**", value = user["currency"])
+        await ctx.send(embed = displayProfile)
+        '''await ctx.send("**Username:** {}\n**Roles:** {}\n**Messages Sent:** {}\n**Level:** {}\n**Currency:** ${}".format(
             user["name"],
             ", ".join([role.name for role in member.roles[1:]]),
             user["messages"],
-            user["level"])
-        )
+            user["level"],
+            user["currency"])
+        )'''
 
     @commands.command()
     async def leaderboard(self, ctx):
