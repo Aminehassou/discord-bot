@@ -13,6 +13,7 @@ class Adventure(commands.Cog):
     
     @commands.command()
     async def adventure(self, ctx):
+        """Go on an adventure in order to (possibly) make money"""
         userId = ctx.author.id
         guildId = ctx.author.guild.id
         user = db.getUser(userId, guildId)

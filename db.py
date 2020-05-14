@@ -11,6 +11,9 @@ def getUser(userId, guildId):
     c.execute("SELECT * FROM users WHERE id = :id AND guild_id = :guild_id", {"id": userId, "guild_id": guildId})
     return c.fetchone()
 
+def getItem(itemId):
+    c.execute("SELECT * FROM items WHERE item_id = :item_id", {"item_id": itemId})
+
 def insertNewUser(userId, guildId, name):
     newUser = {"id": userId, "guild_id": guildId, "name": name, "messages": 0, "level": 0, "is_upgraded": 0, "currency": 0, "datetime_adventure": ""}
     c.execute("INSERT INTO users VALUES (:id, :guild_id, :name, :messages, :level, :is_upgraded, :currency, :datetime_adventure)", newUser)

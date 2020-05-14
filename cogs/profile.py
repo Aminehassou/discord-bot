@@ -67,13 +67,6 @@ class Profile(commands.Cog):
         displayProfile.add_field(name = "**Level**", value = user["level"])
         displayProfile.add_field(name = "**Currency**", value = user["currency"])
         await ctx.send(embed = displayProfile)
-        '''await ctx.send("**Username:** {}\n**Roles:** {}\n**Messages Sent:** {}\n**Level:** {}\n**Currency:** ${}".format(
-            user["name"],
-            ", ".join([role.name for role in member.roles[1:]]),
-            user["messages"],
-            user["level"],
-            user["currency"])
-        )'''
 
     @commands.command()
     async def leaderboard(self, ctx):
