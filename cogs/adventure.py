@@ -9,7 +9,7 @@ from discord.ext import commands
 class Adventure(commands.Cog):
     def __init__(self, client): 
         self.client = client
-        self.adventureCooldown = 1 * 3600 #in seconds
+        self.adventureCooldown = 0.1 * 3600 #in seconds
     
     @commands.command()
     async def adventure(self, ctx):
@@ -39,8 +39,12 @@ class Adventure(commands.Cog):
         if user["is_upgraded"] == 0:
             await ctx.send("You must pick a class in order to be able to go on an adventure, you can pick your class at level 3")
             return 0
-        
-        timeSinceLastAdventure = lastAdventured - float(user["datetime_adventure"])
+
+        if user["datetime_adventure"] != "":
+            timeSinceLastAdventure = lastAdventured - float(user["datetime_adventure"])
+
+        else:
+            timeSinceLastAdventure = self.adventureCooldown + 1
 
         if user["datetime_adventure"] != "" and timeSinceLastAdventure < self.adventureCooldown:
             await ctx.send("You cannot adventure at this time, you must wait {:.2f} hours.".format((self.adventureCooldown - timeSinceLastAdventure)/3600))
