@@ -6,20 +6,28 @@ from discord.ext import commands
 logging.basicConfig(level=logging.INFO)
 
 client = commands.Bot(command_prefix="$")
-
-@client.command()
+ownerId = 141283512345952256
+@commands.command()
 async def load(ctx, extension):
-    client.load_extension(f"cogs.{extension}")
+    if ctx.author.id == ownerId:
+        client.load_extension(f"cogs.{extension}")
+    else:
+        await ctx.send("You are not allowed to use this command, only the bot owner can use it")
 
-@client.command()
+@commands.command()
 async def unload(ctx, extension):
-    client.unload_extension(f"cogs.{extension}")
+    if ctx.author.id == ownerId:
+        client.unload_extension(f"cogs.{extension}")
+    else:
+        await ctx.send("You are not allowed to use this command, only the bot owner can use it")
 
-@client.command()
+@commands.command()
 async def reload(ctx, extension):
-    client.unload_extension(f"cogs.{extension}")
-    client.load_extension(f"cogs.{extension}")
-
+    if ctx.author.id == ownerId:
+        client.unload_extension(f"cogs.{extension}")
+        client.load_extension(f"cogs.{extension}")
+    else:
+        await ctx.send("You are not allowed to use this command, only the bot owner can use it")
 
 for filename in os.listdir("./cogs"):
     if filename.endswith(".py"):
