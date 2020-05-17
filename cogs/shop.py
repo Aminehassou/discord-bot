@@ -14,9 +14,12 @@ class Shop(commands.Cog):
         displayShop = discord.Embed(color = discord.Color.dark_blue(), title = "Shop")
         displayShop.add_field(name = "1. Lucky Amulet [$600]", value = "Increases your chances of making money during an adventure (stacks with even luckier amulet)")
         displayShop.add_field(name = "2. Even Luckier Amulet [$1200]", value = "Increases your chances of making money during an adventure (stacks with lucky amulet)")
+        displayShop.add_field(name = "3. Adventurer's Dagger [$900]", value = "Allows you to stab other people for a chance at stealing their money their money (unlocks the $steal command)")
+        displayShop.add_field(name = "How to buy", value = "$buy [item id]")
         await ctx.send(embed = displayShop)
     @commands.command()
     async def buy(self, ctx, item):
+        '''Buy an item from the shop'''
         currentItem = db.getItem(item)
         userId = ctx.author.id
         guildId = ctx.guild.id

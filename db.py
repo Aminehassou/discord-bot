@@ -14,6 +14,10 @@ def getUser(userId, guildId):
 def getItem(itemId):
     c.execute("SELECT * FROM items WHERE item_id = :item_id", {"item_id": itemId})
     return c.fetchone()
+    
+def getItems():
+    c.execute("SELECT * FROM items")
+    return c.fetchall()
 
 def getUserItem(itemId, userId, guildId):
     c.execute("SELECT * FROM user_items WHERE user_buyer_id = :user_buyer_id AND guild_id = :guild_id AND bought_item_id = :bought_item_id", {"user_buyer_id": userId, "guild_id": guildId, "bought_item_id": itemId})
