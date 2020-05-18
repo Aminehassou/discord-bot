@@ -54,6 +54,8 @@ class Profile(commands.Cog):
         """Displays the specified user's profile"""
         channel = channel or ctx.channel
         user = db.getUser(member.id, member.guild.id)
+        userItems = db.getUserItems(ctx.author.id, ctx.author.guild.id)
+        print(userItems)
         if not user:
             await ctx.send("This user does not exist or has no profile information.")
             return 0
@@ -63,6 +65,7 @@ class Profile(commands.Cog):
         displayProfile.add_field(name = "**Username**", value = user["name"])
         if len(member.roles) > 1:
             displayProfile.add_field(name = "**Roles**", value = ", ".join([role.name for role in member.roles[1:]]))
+        displayProfile.add_field(name = "**Items**", value = ", ".join([db.getItem(item["bought_item_id"])["item_name"] for item in userItems]))
         displayProfile.add_field(name = "**Messages Sent**", value = user["messages"], inline = False)
         displayProfile.add_field(name = "**Level**", value = user["level"])
         displayProfile.add_field(name = "**Currency**", value = user["currency"])
