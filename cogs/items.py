@@ -11,7 +11,7 @@ class Items(commands.Cog):
     def __init__(self, client): 
         self.client = client
         self.items = {}
-        self.stealCooldown = 0 * 3600
+        self.stealCooldown = 3 * 3600
         tempItems = db.getItems()
         for item in tempItems:
             self.items[item["item_id"]] = item
@@ -25,6 +25,7 @@ class Items(commands.Cog):
         userId = ctx.author.id
         guildId = ctx.author.guild.id
         user = db.getUser(userId, guildId)
+        enemyUser = db.getUser(member.id, member.guild.id)
         lastStolen = datetime.datetime.now().timestamp()
 
         if user["last_stolen"] != "":
@@ -40,6 +41,8 @@ class Items(commands.Cog):
         if db.getUserItem(3, userId, guildId) is not None:
             if randint(1, 100) >= 50:
                 moneyLost = randint(50, 150) * -1
+                if enemyUser["currency"] + moneyLost < 0:
+                    moneyLost = enemyUser["currency"] * -1
                 db.modifyCurrency(member.id, guildId, moneyLost)
                 db.modifyCurrency(userId, guildId, moneyLost * -1)
                 db.updateStealTiming(userId, guildId, str(lastStolen))

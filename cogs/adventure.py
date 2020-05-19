@@ -9,7 +9,7 @@ from discord.ext import commands
 class Adventure(commands.Cog):
     def __init__(self, client): 
         self.client = client
-        self.adventureCooldown = 0.1 * 3600 #in seconds
+        self.adventureCooldown = 1 * 3600 #in seconds
     
     @commands.command()
     async def adventure(self, ctx):
